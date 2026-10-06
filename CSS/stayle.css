@@ -1,0 +1,20 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+.box{
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  background: #BABABA;
+  border-radius: 20px;
+  padding: 30px 30px;
+  box-shadow: 10px 10px 20px rgb(0 0 0 / 30%);
+}
+.box input{
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: none;
+}
