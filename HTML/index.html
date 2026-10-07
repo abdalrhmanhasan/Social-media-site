@@ -14,18 +14,18 @@
   </head>
 
   <body>
-    <!-- LOG IN MODULE -->
+    <!-- LOG IN MODAL -->
     <div
       class="modal fade"
-      id="exampleModal"
+      id="loginModal"
       tabindex="-1"
-      aria-labelledby="exampleModalLabel"
+      aria-labelledby="loginModalTitle"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+            <h1 class="modal-title fs-5" id="loginModalTitle">Log in</h1>
             <button
               type="button"
               class="btn-close"
@@ -36,16 +36,12 @@
           <div class="modal-body">
             <form>
               <div class="mb-3">
-                <label  for="recipient-name" class="col-form-label"
-                  >UserName:</label
-                >
+                <label for="username" class="col-form-label">UserName:</label>
                 <input type="text" class="form-control" id="username" />
               </div>
               <div class="mb-3">
-                <label for="message-text" class="col-form-label"
-                  >Password:</label
-                >
-                <input type="text" class="form-control" id="pass" />
+                <label for="pass" class="col-form-label">Password:</label>
+                <input type="password" class="form-control" id="pass" />
               </div>
             </form>
           </div>
@@ -57,18 +53,22 @@
             >
               Cancel
             </button>
-            <button type="button" class="btn btn-primary" onclick="logInBtn()">Log in</button>
+            <button type="button" class="btn btn-primary" onclick="logInBtn()">
+              Log in
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <!-- //LOG IN MODULE// -->
-
-    <div class="container shadow rounded">
+    <!-- //LOG IN MODAL// -->
+    <!-- Succsess Module -->
+    <div id="succsessAlert"></div>
+    <!-- //Succsess Module// -->
+    <div class="container shadow rounded p-0">
       <!-- NAV BAR -->
-      <nav class="navbar navbar-expand-lg nav-light bg-body-tertiary">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <b class="navbar-brand" href="#">Tarmeez</b>
+          <span class="navbar-brand fw-bold">Tarmeez</span>
           <button
             class="navbar-toggler"
             type="button"
@@ -89,19 +89,31 @@
                 <a class="nav-link" href="#">Profile</a>
               </li>
             </ul>
+            <!-- FOR NON-LOGED IN USER -->
             <div class="d-flex w-100 justify-content-end p-2">
               <button
+                id="login-btn"
                 type="button"
                 class="btn btn-outline-success"
                 data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                data-bs-target="#loginModal"
               >
                 Log in
               </button>
-              <button type="button" class="btn btn-outline-secondary ms-3">
+              <button
+                id="Register-btn"
+                type="button"
+                class="btn btn-outline-secondary ms-3"
+              >
                 Register
               </button>
             </div>
+            <!-- //FOR NON-LOGED IN USER -->
+
+            
+            <!-- FOR LOGED IN USER -->
+            <button id="logedOut" type="button" class="btn btn-outline-danger" onclick="logout()">Logout</button>
+            <!-- //FOR LOGED IN USER -->
           </div>
         </div>
       </nav>
@@ -110,15 +122,12 @@
 
     <!-- CONTENT -->
     <div class="container mt-5">
-      <!-- posts -->
       <div id="posts">
-        <!-- post -->
         <h1>Loading...</h1>
-        <!-- //post //-->
       </div>
-      <!-- //posts// -->
     </div>
     <!-- //CONTENT// -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/node_modules/axios/dist/axios.js"></script>
     <script type="module" src="/JS/script.js"></script>

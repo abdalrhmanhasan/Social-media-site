@@ -1,63 +1,127 @@
-window.logInBtn = logInBtn
-
-
+const baseUrl = "https://tarmeezacademy.com/api/v1";
+window.logInBtn = logInBtn;
+window.logout = logout;
+// ---------- POSTS ----------
 axios
-  .get("https://tarmeezacademy.com/api/v1/posts?limit=50")
+  .get(`${baseUrl}/posts?limit=50`)
   .then((response) => {
-    let post = response.data.data;
-    document.getElementById("posts").innerHTML = "";
-
+    const posts = response.data.data;
     let allPosts = "";
 
-    post.forEach((pos, i) => {
-      let postimge = "";
+    posts.forEach((pos, i) => {
+      let postImage = "";
       if (
         pos.image != null &&
         typeof pos.image === "string" &&
         pos.image.trim() !== ""
       ) {
-        postimge = `<img class="w-100" src="${pos.image}" onload="this.style.opacity=1" onerror="this.remove()" />`;
+        postImage = `<img class="w-100" src="${pos.image}" onload="this.style.opacity=1" onerror="this.remove()" />`;
       }
 
-      let postTitle = "";
-      if (pos.title != null) {
-        postTitle = pos.title;
-      }
+      const postTitle = pos.title != null ? pos.title : "";
 
-      let content = `
-      <div class="card shadow mb-5 post-card" style="animation-delay: ${Math.min(i, 10) * 0.08}s">
-        <div class="card-header">
-          <img
-            src="/Assetes/Profile/profile.png"
-            class="pofile-pics border border-2 rounded-circle"
-          />
-          <b class="ms-2">${pos.author.username}</b>
-        </div>
-        <div class="card-body">
-          ${postimge}
-          <h6 class="mt-2">${pos.created_at}</h6>
-          <h4>${postTitle}</h4>
-          <p class="mt-4">${pos.body}</p>
-          <hr>
-          <div>
-            <img src="/Assetes/Post pics/pen.svg"/>
-            <span>
-              (${pos.comments_count}) comments
-            </span>
+      allPosts += `
+        <div class="card shadow mb-5 post-card" style="animation-delay: ${Math.min(i, 10) * 0.08}s">
+          <div class="card-header">
+            <img
+              src="/Assetes/Profile/profile.png"
+              class="pofile-pics border border-2 rounded-circle"
+            />
+            <b class="ms-2">${pos.author.username}</b>
           </div>
-        </div>
-      </div>`;
-
-      allPosts += content;
+          <div class="card-body">
+            ${postImage}
+            <h6 class="mt-2">${pos.created_at}</h6>
+            <h4>${postTitle}</h4>
+            <p class="mt-4">${pos.body}</p>
+            <hr>
+            <div>
+              <img src="/Assetes/Post pics/pen.svg"/>
+              <span>(${pos.comments_count}) comments</span>
+            </div>
+          </div>
+        </div>`;
     });
 
     document.getElementById("posts").innerHTML = allPosts;
+  })
+  .catch((error) => {
+    console.log(error);
+    document.getElementById("posts").innerHTML =
+      "<h4>Could not load posts.</h4>";
   });
 
+// ---------- LOG IN ----------
+function logInBtn() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("pass").value;
 
-function logInBtn(){
-  const username =document.getElementById("username").value
-  const password =document.getElementById("pass").value
+  axios
+    .post(`${baseUrl}/login`, { username, password })
+    .then((response) => {
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
-  console.log(username,password)
+      const modal = document.getElementById("loginModal");
+      const modalInst =
+        bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+      modalInst.hide();
+      setupUI();
+    })
+    .catch((error) => {
+      const msg = error.response?.data?.message || "Something went wrong";
+      alert(msg);
+    });
 }
+
+// function showSuccsessMassege() {
+//   const alertPlaceholder = document.getElementById("succsessAlert");
+//   const appendAlert = (message, type) => {
+//     const wrapper = document.createElement("div");
+//     wrapper.innerHTML = [
+//       `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+//       `   <div>${message}</div>`,
+//       '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+//       "</div>",
+//     ].join("");
+
+//     alertPlaceholder.append(wrapper);
+//   };
+
+//   const alertTrigger = document.getElementById("succsessAlert");
+//   if (alertTrigger) {
+//     alertTrigger.addEventListener("click", () => {
+//       appendAlert("Nice, you triggered this alert message!", "success");
+//     });
+//   }
+// }
+// showSuccsessMassege()
+
+function setupUI() {
+  const token = localStorage.getItem("token");
+  const loginBtn = document.getElementById("login-btn");
+  const RegisterBtn = document.getElementById("Register-btn");
+  const logoutBtn = document.getElementById("logedOut");
+
+  if (token == null) {
+    // logged out
+    loginBtn.style.display = "";
+    RegisterBtn.style.display = "";
+    logoutBtn.style.display = "none";
+  } else {
+    // logged in
+    loginBtn.style.display = "none";
+    RegisterBtn.style.display = "none";
+    logoutBtn.style.display = "";
+  }
+}
+
+
+
+function logout() {
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  alert("logout");
+  setupUI();
+}
+setupUI();
