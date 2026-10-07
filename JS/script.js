@@ -1,3 +1,6 @@
+window.logInBtn = logInBtn
+
+
 axios
   .get("https://tarmeezacademy.com/api/v1/posts?limit=50")
   .then((response) => {
@@ -50,3 +53,11 @@ axios
 
     document.getElementById("posts").innerHTML = allPosts;
   });
+
+
+function logInBtn(){
+  const username =document.getElementById("username").value
+  const password =document.getElementById("pass").value
+
+  console.log(username,password)
+}

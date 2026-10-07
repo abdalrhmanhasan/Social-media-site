@@ -27,3 +27,10 @@ h6{
     transform: translateY(0);
   }
 }
+.navbar .nav-link {
+  color: black;
+}
+.navbar .nav-link.active {
+  color: black;
+  font-weight: bold;
+}
