@@ -3,19 +3,19 @@
   padding: 0px;
   box-sizing: border-box;
 }
-body{
-  background: #f0ECfF
+body {
+  background: #f0ecff;
 }
 
-.pofile-pics{
+.pofile-pics {
   height: 40px;
-} 
+}
 
-h6{
+h6 {
   color: rgb(121, 116, 116);
 }
 
- .post-card {
+.post-card {
   opacity: 0;
   transform: translateY(20px);
   animation: fadeUp 0.5s ease forwards;

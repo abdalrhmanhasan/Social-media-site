@@ -3,7 +3,7 @@ window.logInBtn = logInBtn;
 window.logout = logout;
 // ---------- POSTS ----------
 axios
-  .get(`${baseUrl}/posts?limit=50`)
+  .get(`${baseUrl}/posts?page=868`)
   .then((response) => {
     const posts = response.data.data;
     let allPosts = "";
@@ -19,6 +19,14 @@ axios
       }
 
       const postTitle = pos.title != null ? pos.title : "";
+
+      let tagsHtml = "";
+      for (let tag of pos.tags) {
+        tagsHtml += `
+          <button class="btn bg-secondary text-light rounded-pill mb-1 ms-2 px-3 py-1">
+            ${tag.name}
+          </button>`;
+      }
 
       allPosts += `
         <div class="card shadow mb-5 post-card" style="animation-delay: ${Math.min(i, 10) * 0.08}s">
@@ -38,6 +46,7 @@ axios
             <div>
               <img src="/Assetes/Post pics/pen.svg"/>
               <span>(${pos.comments_count}) comments</span>
+              <span>${tagsHtml}</span>
             </div>
           </div>
         </div>`;
@@ -112,7 +121,7 @@ function logout() {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
   alert("logout");
-  showSuccsessMassege("you logged out successfully!")
+  showSuccsessMassege("you logged out successfully!");
   setupUI();
 }
 setupUI();
