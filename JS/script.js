@@ -1,6 +1,7 @@
 const baseUrl = "https://tarmeezacademy.com/api/v1";
 window.logInBtn = logInBtn;
 window.logout = logout;
+window.RegBtn = RegBtn;
 // ---------- POSTS ----------
 axios
   .get(`${baseUrl}/posts?page=868`)
@@ -75,7 +76,7 @@ function logInBtn() {
       const modalInst =
         bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
       modalInst.hide();
-      showSuccsessMassege("Nice, you logged in successfully!");
+      showSuccsessMassege("you logged in successfully!");
       setupUI();
     })
     .catch((error) => {
@@ -120,8 +121,33 @@ function setupUI() {
 function logout() {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
-  alert("logout");
   showSuccsessMassege("you logged out successfully!");
   setupUI();
 }
 setupUI();
+
+function RegBtn() {
+  const name = document.getElementById("reg-name").value;
+  const username = document.getElementById("reg-username").value;
+  const password = document.getElementById("reg-pass").value;
+
+  console.log(name, username, password);
+
+  axios
+    .post(`${baseUrl}/register`, { name, username, password })
+    .then((response) => {
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      const modal = document.getElementById("RegModal");
+      const modalInst =
+        bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+      modalInst.hide();
+      showSuccsessMassege("you've been registered successfully!");
+      setupUI();
+    })
+    .catch((error) => {
+      const msg = error.response?.data?.message || "Something went wrong";
+      alert(msg);
+    });
+}

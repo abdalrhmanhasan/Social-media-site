@@ -64,11 +64,66 @@
     <!-- Succsess Module -->
     <div id="succsessAlert" class="success-massege"></div>
     <!-- //Succsess Module// -->
+
+    <!--REG MODAL -->
+    <div
+      class="modal fade"
+      id="RegModal"
+      tabindex="-1"
+      aria-labelledby="loginModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="loginModalTitle">
+              Register a New User
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="username" class="col-form-label">Name:</label>
+                <input type="text" class="form-control" id="reg-name" />
+              </div>
+              <div class="mb-3">
+                <label for="username" class="col-form-label">UserName:</label>
+                <input type="text" class="form-control" id="reg-username" />
+              </div>
+              <div class="mb-3">
+                <label for="pass" class="col-form-label">Password:</label>
+                <input type="password" class="form-control" id="reg-pass" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" onclick="RegBtn()">
+              Register
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- //LOG IN MODAL// -->
+
     <div class="container shadow rounded p-0">
       <!-- NAV BAR -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <span class="navbar-brand fw-bold">Tarmeez</span>
+          <span class="navbar-brand fw-bold">SocialWeb</span>
           <button
             class="navbar-toggler"
             type="button"
@@ -104,6 +159,8 @@
                 id="Register-btn"
                 type="button"
                 class="btn btn-outline-secondary ms-3"
+                data-bs-toggle="modal"
+                data-bs-target="#RegModal"
               >
                 Register
               </button>
