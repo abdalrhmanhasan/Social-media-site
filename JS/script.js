@@ -8,7 +8,6 @@ axios
     const posts = response.data.data;
     let allPosts = "";
 
-    //commint
     posts.forEach((pos, i) => {
       let postImage = "";
       if (
@@ -67,6 +66,7 @@ function logInBtn() {
       const modalInst =
         bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
       modalInst.hide();
+      showSuccsessMassege("Nice, you logged in successfully!");
       setupUI();
     })
     .catch((error) => {
@@ -75,28 +75,19 @@ function logInBtn() {
     });
 }
 
-// function showSuccsessMassege() {
-//   const alertPlaceholder = document.getElementById("succsessAlert");
-//   const appendAlert = (message, type) => {
-//     const wrapper = document.createElement("div");
-//     wrapper.innerHTML = [
-//       `<div class="alert alert-${type} alert-dismissible" role="alert">`,
-//       `   <div>${message}</div>`,
-//       '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-//       "</div>",
-//     ].join("");
+function showSuccsessMassege(message) {
+  const alertPlaceholder = document.getElementById("succsessAlert");
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = `
+    <div class="alert alert-success alert-dismissible" role="alert">
+      <div>${message}</div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>`;
+  alertPlaceholder.append(wrapper);
 
-//     alertPlaceholder.append(wrapper);
-//   };
-
-//   const alertTrigger = document.getElementById("succsessAlert");
-//   if (alertTrigger) {
-//     alertTrigger.addEventListener("click", () => {
-//       appendAlert("Nice, you triggered this alert message!", "success");
-//     });
-//   }
-// }
-// showSuccsessMassege()
+  // auto-remove after 3 seconds
+  setTimeout(() => wrapper.remove(), 3000);
+}
 
 function setupUI() {
   const token = localStorage.getItem("token");
@@ -117,12 +108,11 @@ function setupUI() {
   }
 }
 
-
-
 function logout() {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
   alert("logout");
+  showSuccsessMassege("you logged out successfully!")
   setupUI();
 }
 setupUI();

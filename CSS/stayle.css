@@ -34,3 +34,12 @@ h6{
   color: black;
   font-weight: bold;
 }
+
+.success-massege {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 2000;
+  margin: 16px;
+  width: 500px;
+}
