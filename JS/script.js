@@ -8,6 +8,7 @@ axios
     const posts = response.data.data;
     let allPosts = "";
 
+    //commint
     posts.forEach((pos, i) => {
       let postImage = "";
       if (
