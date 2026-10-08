@@ -121,20 +121,17 @@ function setupUI() {
   const loginBtn = document.getElementById("login-btn");
   const RegisterBtn = document.getElementById("Register-btn");
   const logoutDiv = document.getElementById("logOutDiv");
-  const addpostBtn = document.getElementById("addingPost");
 
   if (token == null) {
     // logged out
     loginBtn.style.display = "";
     RegisterBtn.style.display = "";
     logoutDiv.classList.add("d-none");
-    addpostBtn.style.display = "none";
   } else {
     // logged in
     loginBtn.style.display = "none";
     RegisterBtn.style.display = "none";
     logoutDiv.classList.remove("d-none");
-    addpostBtn.style.display = "";
 
     const user = JSON.parse(localStorage.getItem("user"));
     document.getElementById("profileUserName").innerHTML = user.username;
@@ -204,6 +201,4 @@ function AddingBtn() {
 
 function postClicked(postId) {
   console.log(postId);
-
-  window.location = `postDetail.html`;
 }
