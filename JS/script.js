@@ -2,9 +2,10 @@ const baseUrl = "https://tarmeezacademy.com/api/v1";
 window.logInBtn = logInBtn;
 window.logout = logout;
 window.RegBtn = RegBtn;
+window.AddingBtn = AddingBtn;
 // ---------- POSTS ----------
 axios
-  .get(`${baseUrl}/posts?page=868`)
+  .get(`${baseUrl}/posts`)
   .then((response) => {
     const posts = response.data.data;
     let allPosts = "";
@@ -85,11 +86,11 @@ function logInBtn() {
     });
 }
 
-function showSuccsessMassege(message) {
+function showSuccsessMassege(message, type = "success") {
   const alertPlaceholder = document.getElementById("succsessAlert");
   const wrapper = document.createElement("div");
   wrapper.innerHTML = `
-    <div class="alert alert-success alert-dismissible" role="alert">
+    <div class="alert alert-${type} alert-dismissible" role="alert">
       <div>${message}</div>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>`;
@@ -104,17 +105,20 @@ function setupUI() {
   const loginBtn = document.getElementById("login-btn");
   const RegisterBtn = document.getElementById("Register-btn");
   const logoutBtn = document.getElementById("logedOut");
+  const addpostBtn = document.getElementById("addingPost");
 
   if (token == null) {
     // logged out
     loginBtn.style.display = "";
     RegisterBtn.style.display = "";
     logoutBtn.style.display = "none";
+    addpostBtn.style.display = "none";
   } else {
     // logged in
     loginBtn.style.display = "none";
     RegisterBtn.style.display = "none";
     logoutBtn.style.display = "";
+    addpostBtn.style.display = "";
   }
 }
 
@@ -149,5 +153,33 @@ function RegBtn() {
     .catch((error) => {
       const msg = error.response?.data?.message || "Something went wrong";
       alert(msg);
+    });
+}
+
+function AddingBtn() {
+  const title = document.getElementById("addingTitle").value;
+  const body = document.getElementById("addingBody").value;
+  const Image = document.getElementById("addingImage").files[0]; // this is cuz it.s resiving files and i want just one
+  const token = localStorage.getItem("token");
+  const headers = {
+    authorization: `Bearer ${token}`,
+  };
+  let formData = new FormData();
+  formData.append("body", body);
+  formData.append("title", title);
+  formData.append("image", Image);
+
+  axios
+    .post(`${baseUrl}/posts`, formData, { headers: headers })
+    .then((response) => {
+      const modal = document.getElementById("addingModal");
+      const modalInst =
+        bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+      modalInst.hide();
+      showSuccsessMassege("New Post Was Created", "primary");
+    })
+    .catch((error) => {
+      const msg = error.response?.data?.message || "Something went wrong";
+      showSuccsessMassege(msg, "danger");
     });
 }

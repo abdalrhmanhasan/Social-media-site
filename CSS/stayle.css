@@ -44,7 +44,7 @@ h6 {
   width: 500px;
 }
 
-#addingPost{
+#addingPost {
   border-radius: 100px;
   font-size: 50px;
   right: 3%;
@@ -53,4 +53,9 @@ h6 {
   background: #a093cf;
   cursor: pointer;
   text-align: center;
+}
+
+#addingBody {
+  border-radius: 15px;
+  resize: none;
 }
