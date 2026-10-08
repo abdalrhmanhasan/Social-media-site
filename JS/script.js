@@ -8,6 +8,7 @@ let curruntPage = 1;
 let lastPage;
 
 window.addEventListener("scroll", () => {
+  if (!document.getElementById("posts")) return;
   const endOfPage =
     window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
 
@@ -15,11 +16,11 @@ window.addEventListener("scroll", () => {
     curruntPage++;
     getPosts(false, curruntPage);
   }
-  console.log(curruntPage, lastPage);
 });
-
 // ---------- POSTS ----------
-getPosts();
+if (document.getElementById("posts")) {
+  getPosts();
+}
 function getPosts(reload = true, page = 1) {
   axios
     .get(`${baseUrl}/posts?limit=4&page=${page}`)
@@ -121,6 +122,7 @@ function setupUI() {
   const loginBtn = document.getElementById("login-btn");
   const RegisterBtn = document.getElementById("Register-btn");
   const logoutDiv = document.getElementById("logOutDiv");
+
   const addpostBtn = document.getElementById("addingPost");
 
   if (token == null) {
@@ -128,13 +130,15 @@ function setupUI() {
     loginBtn.style.display = "";
     RegisterBtn.style.display = "";
     logoutDiv.classList.add("d-none");
-    addpostBtn.style.display = "none";
+    if(addpostBtn != null){
+    addpostBtn.style.display = "none";}
   } else {
     // logged in
     loginBtn.style.display = "none";
     RegisterBtn.style.display = "none";
     logoutDiv.classList.remove("d-none");
-    addpostBtn.style.display = "";
+    if(addpostBtn != null){
+    addpostBtn.style.display = "";}
 
     const user = JSON.parse(localStorage.getItem("user"));
     document.getElementById("profileUserName").innerHTML = user.username;
@@ -205,5 +209,5 @@ function AddingBtn() {
 function postClicked(postId) {
   console.log(postId);
 
-  window.location = `postDetail.html`;
+  window.location = `postDetail.html?postId=${postId}`;
 }
