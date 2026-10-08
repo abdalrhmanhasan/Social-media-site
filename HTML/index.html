@@ -238,16 +238,23 @@
               </button>
             </div>
             <!-- //FOR NON-LOGED IN USER -->
+            <div class="d-flex bg" id="logOutDiv">
+              <!-- FOR LOGED IN USER -->
 
-            <!-- FOR LOGED IN USER -->
-            <button
-              id="logedOut"
-              type="button"
-              class="btn btn-outline-danger"
-              onclick="logout()"
-            >
-              Logout
-            </button>
+              <img
+                class="rounded-circle pofile-pics"
+                src="/Assetes/Profile/profile.png"
+              />
+              <p class="mt-2 mx-2" id="profileUserName"></p>
+              <button
+                id="logedOut"
+                type="button"
+                class="btn btn-outline-danger"
+                onclick="logout()"
+              >
+                Logout
+              </button>
+            </div>
             <!-- //FOR LOGED IN USER -->
           </div>
         </div>

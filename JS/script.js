@@ -99,29 +99,30 @@ function showSuccsessMassege(message, type = "success") {
   // auto-remove after 3 seconds
   setTimeout(() => wrapper.remove(), 3000);
 }
-
 function setupUI() {
   const token = localStorage.getItem("token");
   const loginBtn = document.getElementById("login-btn");
   const RegisterBtn = document.getElementById("Register-btn");
-  const logoutBtn = document.getElementById("logedOut");
+  const logoutDiv = document.getElementById("logOutDiv");
   const addpostBtn = document.getElementById("addingPost");
 
   if (token == null) {
     // logged out
     loginBtn.style.display = "";
     RegisterBtn.style.display = "";
-    logoutBtn.style.display = "none";
+    logoutDiv.classList.add("d-none");
     addpostBtn.style.display = "none";
   } else {
     // logged in
     loginBtn.style.display = "none";
     RegisterBtn.style.display = "none";
-    logoutBtn.style.display = "";
+    logoutDiv.classList.remove("d-none");
     addpostBtn.style.display = "";
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    document.getElementById("profileUserName").innerHTML = user.username;
   }
 }
-
 function logout() {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
