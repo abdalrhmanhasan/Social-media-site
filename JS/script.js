@@ -3,34 +3,52 @@ window.logInBtn = logInBtn;
 window.logout = logout;
 window.RegBtn = RegBtn;
 window.AddingBtn = AddingBtn;
+let curruntPage = 1;
+let lastPage;
+
+window.addEventListener("scroll", () => {
+  const endOfPage =
+    window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
+
+  if (endOfPage && curruntPage < lastPage) {
+    curruntPage++;
+    getPosts(false, curruntPage);
+  }
+  console.log(curruntPage, lastPage);
+});
+
 // ---------- POSTS ----------
-axios
-  .get(`${baseUrl}/posts`)
-  .then((response) => {
-    const posts = response.data.data;
-    let allPosts = "";
-
-    posts.forEach((pos, i) => {
-      let postImage = "";
-      if (
-        pos.image != null &&
-        typeof pos.image === "string" &&
-        pos.image.trim() !== ""
-      ) {
-        postImage = `<img class="w-100" src="${pos.image}" onload="this.style.opacity=1" onerror="this.remove()" />`;
+getPosts();
+function getPosts(reload = true, page = 1) {
+  axios
+    .get(`${baseUrl}/posts?limit=4&page=${page}`)
+    .then((response) => {
+      const posts = response.data.data;
+      lastPage = response.data.meta.last_page;
+      if (reload) {
+        document.getElementById("posts").innerHTML = "";
       }
+      posts.forEach((pos, i) => {
+        let postImage = "";
+        if (
+          pos.image != null &&
+          typeof pos.image === "string" &&
+          pos.image.trim() !== ""
+        ) {
+          postImage = `<img class="w-100" src="${pos.image}" onload="this.style.opacity=1" onerror="this.remove()" />`;
+        }
 
-      const postTitle = pos.title != null ? pos.title : "";
+        const postTitle = pos.title != null ? pos.title : "";
 
-      let tagsHtml = "";
-      for (let tag of pos.tags) {
-        tagsHtml += `
+        let tagsHtml = "";
+        for (let tag of pos.tags) {
+          tagsHtml += `
           <button class="btn bg-secondary text-light rounded-pill mb-1 ms-2 px-3 py-1">
             ${tag.name}
           </button>`;
-      }
+        }
 
-      allPosts += `
+        document.getElementById("posts").innerHTML += `
         <div class="card shadow mb-5 post-card" style="animation-delay: ${Math.min(i, 10) * 0.08}s">
           <div class="card-header">
             <img
@@ -52,16 +70,14 @@ axios
             </div>
           </div>
         </div>`;
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      document.getElementById("posts").innerHTML =
+        "<h4>Could not load posts.</h4>";
     });
-
-    document.getElementById("posts").innerHTML = allPosts;
-  })
-  .catch((error) => {
-    console.log(error);
-    document.getElementById("posts").innerHTML =
-      "<h4>Could not load posts.</h4>";
-  });
-
+}
 // ---------- LOG IN ----------
 function logInBtn() {
   const username = document.getElementById("username").value;
