@@ -7,6 +7,7 @@ window.postClicked = postClicked;
 let curruntPage = 1;
 let lastPage;
 
+
 window.addEventListener("scroll", () => {
   if (!document.getElementById("posts")) return;
   const endOfPage =

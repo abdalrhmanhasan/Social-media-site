@@ -59,3 +59,7 @@ h6 {
   border-radius: 15px;
   resize: none;
 }
+
+.comments {
+  background: #EFF5FF;
+}
