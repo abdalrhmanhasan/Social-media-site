@@ -1,11 +1,22 @@
 const baseUrl = "https://tarmeezacademy.com/api/v1";
+
 window.logInBtn = logInBtn;
 window.logout = logout;
 window.RegBtn = RegBtn;
 window.AddingBtn = AddingBtn;
 window.postClicked = postClicked;
+window.editBtn = editBtn;
+window.addingPost = addingPost;
+window.showSuccsessMassege = showSuccsessMassege;
+window.DeleteBtn = DeleteBtn;
+window.confirmDelete = confirmDelete;
+
+let deletingPostId = null;
+
 let curruntPage = 1;
 let lastPage;
+let editingPostId = null;
+const postsById = {};
 
 window.addEventListener("scroll", () => {
   if (!document.getElementById("posts")) return;
@@ -17,10 +28,11 @@ window.addEventListener("scroll", () => {
     getPosts(false, curruntPage);
   }
 });
-// ---------- POSTS ----------
+
 if (document.getElementById("posts")) {
   getPosts();
 }
+
 function getPosts(reload = true, page = 1) {
   axios
     .get(`${baseUrl}/posts?limit=4&page=${page}`)
@@ -30,7 +42,12 @@ function getPosts(reload = true, page = 1) {
       if (reload) {
         document.getElementById("posts").innerHTML = "";
       }
+
+      const user = JSON.parse(localStorage.getItem("user"));
+
       posts.forEach((pos, i) => {
+        postsById[pos.id] = pos;
+
         let postImage = "";
         if (
           pos.image != null &&
@@ -50,6 +67,12 @@ function getPosts(reload = true, page = 1) {
           </button>`;
         }
 
+        const editHtml =
+          user != null && user.id === pos.author.id
+            ? `<div class="btn btn-outline-danger mt-1 ms-2 edit-btn" onclick="DeleteBtn(${pos.id})">Delete</div>
+            <div class="btn btn-outline-secondary mt-1 edit-btn" onclick="editBtn(${pos.id})">Edit</div>`
+            : "";
+
         document.getElementById("posts").innerHTML += `
         <div class="card shadow mb-5 post-card" style="animation-delay: ${Math.min(i, 10) * 0.08}s">
           <div class="card-header">
@@ -58,6 +81,7 @@ function getPosts(reload = true, page = 1) {
               class="pofile-pics border border-2 rounded-circle"
             />
             <b class="ms-2">${pos.author.username}</b>
+            ${editHtml}
           </div>
           <div class="card-body" onclick="postClicked(${pos.id})">
             ${postImage}
@@ -80,7 +104,7 @@ function getPosts(reload = true, page = 1) {
         "<h4>Could not load posts.</h4>";
     });
 }
-// ---------- LOG IN ----------
+
 function logInBtn() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("pass").value;
@@ -97,6 +121,7 @@ function logInBtn() {
       modalInst.hide();
       showSuccsessMassege("you logged in successfully!");
       setupUI();
+      if (document.getElementById("posts")) getPosts();
     })
     .catch((error) => {
       const msg = error.response?.data?.message || "Something went wrong";
@@ -114,19 +139,17 @@ function showSuccsessMassege(message, type = "success") {
     </div>`;
   alertPlaceholder.append(wrapper);
 
-  // auto-remove after 3 seconds
   setTimeout(() => wrapper.remove(), 3000);
 }
+
 function setupUI() {
   const token = localStorage.getItem("token");
   const loginBtn = document.getElementById("login-btn");
   const RegisterBtn = document.getElementById("Register-btn");
   const logoutDiv = document.getElementById("logOutDiv");
-
   const addpostBtn = document.getElementById("addingPost");
 
   if (token == null) {
-    // logged out
     loginBtn.style.display = "";
     RegisterBtn.style.display = "";
     logoutDiv.classList.add("d-none");
@@ -134,7 +157,6 @@ function setupUI() {
       addpostBtn.style.display = "none";
     }
   } else {
-    // logged in
     loginBtn.style.display = "none";
     RegisterBtn.style.display = "none";
     logoutDiv.classList.remove("d-none");
@@ -146,11 +168,13 @@ function setupUI() {
     document.getElementById("profileUserName").innerHTML = user.username;
   }
 }
+
 function logout() {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
   showSuccsessMassege("you logged out successfully!");
   setupUI();
+  if (document.getElementById("posts")) getPosts();
 }
 setupUI();
 
@@ -158,8 +182,6 @@ function RegBtn() {
   const name = document.getElementById("reg-name").value;
   const username = document.getElementById("reg-username").value;
   const password = document.getElementById("reg-pass").value;
-
-  console.log(name, username, password);
 
   axios
     .post(`${baseUrl}/register`, { name, username, password })
@@ -180,28 +202,42 @@ function RegBtn() {
     });
 }
 
-
 function AddingBtn() {
   const title = document.getElementById("addingTitle").value;
   const body = document.getElementById("addingBody").value;
-  const Image = document.getElementById("addingImage").files[0]; // this is cuz it.s resiving files and i want just one
+  const image = document.getElementById("addingImage").files[0];
   const token = localStorage.getItem("token");
   const headers = {
     authorization: `Bearer ${token}`,
   };
+
   let formData = new FormData();
   formData.append("body", body);
   formData.append("title", title);
-  formData.append("image", Image);
+  if (image) {
+    formData.append("image", image);
+  }
+
+  let url = `${baseUrl}/posts`;
+  let successMsg = "New Post Was Created";
+
+  if (editingPostId !== null) {
+    url = `${baseUrl}/posts/${editingPostId}`;
+    formData.append("_method", "put");
+    successMsg = "Post Was Updated";
+  }
 
   axios
-    .post(`${baseUrl}/posts`, formData, { headers: headers })
-    .then((response) => {
+    .post(url, formData, { headers })
+    .then(() => {
       const modal = document.getElementById("addingModal");
       const modalInst =
         bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
       modalInst.hide();
-      showSuccsessMassege("New Post Was Created", "primary");
+      showSuccsessMassege(successMsg, "primary");
+
+      curruntPage = 1;
+      getPosts();
     })
     .catch((error) => {
       const msg = error.response?.data?.message || "Something went wrong";
@@ -209,8 +245,65 @@ function AddingBtn() {
     });
 }
 
-function postClicked(postId) {
-  console.log(postId);
+function editBtn(postId) {
+  const post = postsById[postId];
+  editingPostId = postId;
 
+  document.getElementById("addingModalTitle").innerHTML = "Edit Post";
+  document.getElementById("addingSubmitBtn").innerHTML = "Update";
+  document.getElementById("addingTitle").value = post.title ?? "";
+  document.getElementById("addingBody").value = post.body;
+  document.getElementById("addingImage").value = "";
+
+  const modal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("addingModal"),
+  );
+  modal.show();
+}
+
+function addingPost() {
+  editingPostId = null;
+
+  document.getElementById("addingModalTitle").innerHTML = "Creat a New Post";
+  document.getElementById("addingSubmitBtn").innerHTML = "Creat a New post";
+  document.getElementById("addingTitle").value = "";
+  document.getElementById("addingBody").value = "";
+  document.getElementById("addingImage").value = "";
+}
+
+function postClicked(postId) {
   window.location = `postDetail.html?postId=${postId}`;
+}
+
+function DeleteBtn(postId) {
+  deletingPostId = postId;
+
+  const modal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("deleteModal"),
+  );
+  modal.show();
+}
+
+function confirmDelete() {
+  const token = localStorage.getItem("token");
+
+  axios
+    .delete(`${baseUrl}/posts/${deletingPostId}`, {
+      headers: { authorization: `Bearer ${token}` },
+    })
+    .then(() => {
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("deleteModal"),
+      );
+      modal.hide();
+      showSuccsessMassege("Post Was Deleted", "success");
+
+      deletingPostId = null;
+      curruntPage = 1;
+      getPosts(); // refresh the feed, no page reload
+    })
+    .catch((error) => {
+      const msg = error.response?.data?.message || "Something went wrong";
+      showSuccsessMassege(msg, "danger");
+    });
 }

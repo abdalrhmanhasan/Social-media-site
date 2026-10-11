@@ -6,6 +6,7 @@ const defaultAvatar = "/Assetes/Profile/profile.png";
 window.goBack = goBack;
 window.addComment = addComment;
 
+
 if (id) {
   getPost();
 } else {
@@ -165,3 +166,4 @@ function showSuccsessMassege(message, type = "success") {
   // auto-remove after 3 seconds
   setTimeout(() => wrapper.remove(), 3000);
 }
+
