@@ -119,8 +119,6 @@
     </div>
     <!--//REG MODAL -->
 
-
-
     <!--DELETE POST MODAL -->
     <div
       class="modal fade"
@@ -164,7 +162,6 @@
     </div>
     <!-- //DELETE POST MODAL// -->
 
-
     <div class="container shadow rounded p-0">
       <!-- NAV BAR -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -184,10 +181,12 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link active" aria-current="page" href="index.html"
+                  >Home</a
+                >
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Profile</a>
+                <a class="nav-link" href="profile.html">Profile</a>
               </li>
             </ul>
             <!-- FOR NON-LOGED IN USER -->
@@ -238,15 +237,61 @@
 
     <!-- CONTENT -->
     <div class="container mt-5">
-      <div id="posts">
-        <h1>Loading...</h1>
+      <!-- PROFILE CARD -->
+      <div class="card shadow profile-card">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <!-- avatar -->
+            <div class="col-12 col-md-2 text-center mb-3 mb-md-0">
+              <img
+                src="/Assetes/Profile/profile.png"
+                class="pofile-pics profile-avatar rounded-circle border border-3 border-dark"
+              />
+            </div>
+
+            <!-- name + username -->
+            <div
+              class="col-12 col-md-5 text-center text-md-start mb-3 mb-md-0 d-flex justify-content-between bg-dange"
+            >
+              <div>
+                <h5 class="fw-bold mb-3">Name:</h5>
+                <h5 class="fw-bold mb-0" id="profName">Loading...</h5>
+              </div>
+              <div class="mt">
+                <h5 class="fw-bold mb-3 merg-left">Email:</h5>
+                <h5 class="fw-bold merg-left" id="profEmail">Loading...</h5>
+              </div>
+            </div>
+
+            <!-- stats -->
+            <!-- Removed ms-5, added text-md-end for right-alignment if needed -->
+            <div class="col-12 col-md-5 s-1 text-md-end">
+              <div class="stat d-inline-block me-3 me-5">
+                <span class="stat-number" id="postCount">0</span>
+                <span class="stat-label">Posts</span>
+              </div>
+              <div class="stat d-inline-block me-5">
+                <span class="stat-number" id="comCount">0</span>
+                <span class="stat-label">Comments</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <!-- //PROFILE CARD// -->
+
+      <!-- USER POSTS -->
+      <h1 class="mt-5 mb-4" id="profialeUserName">
+        <span>Username</span> Posts:
+      </h1>
+      <div id="profile-posts"></div>
+      <!-- //USER POSTS// -->
     </div>
     <!-- //CONTENT// -->
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/node_modules/axios/dist/axios.js"></script>
     <script type="module" src="/JS/script.js"></script>
+    <script type="module" src="/JS/profile.js"></script>
   </body>
 </html>

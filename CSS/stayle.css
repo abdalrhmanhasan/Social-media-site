@@ -67,3 +67,7 @@ h6 {
 .edit-btn{
   float: right;
 }
+
+.merg-left{
+  margin-left: 150px !important;
+}
