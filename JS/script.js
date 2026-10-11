@@ -7,7 +7,6 @@ window.postClicked = postClicked;
 let curruntPage = 1;
 let lastPage;
 
-
 window.addEventListener("scroll", () => {
   if (!document.getElementById("posts")) return;
   const endOfPage =
@@ -131,15 +130,17 @@ function setupUI() {
     loginBtn.style.display = "";
     RegisterBtn.style.display = "";
     logoutDiv.classList.add("d-none");
-    if(addpostBtn != null){
-    addpostBtn.style.display = "none";}
+    if (addpostBtn != null) {
+      addpostBtn.style.display = "none";
+    }
   } else {
     // logged in
     loginBtn.style.display = "none";
     RegisterBtn.style.display = "none";
     logoutDiv.classList.remove("d-none");
-    if(addpostBtn != null){
-    addpostBtn.style.display = "";}
+    if (addpostBtn != null) {
+      addpostBtn.style.display = "";
+    }
 
     const user = JSON.parse(localStorage.getItem("user"));
     document.getElementById("profileUserName").innerHTML = user.username;
