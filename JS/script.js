@@ -180,6 +180,7 @@ function RegBtn() {
     });
 }
 
+
 function AddingBtn() {
   const title = document.getElementById("addingTitle").value;
   const body = document.getElementById("addingBody").value;

@@ -119,8 +119,13 @@ function addComment() {
   const body = input.value.trim();
   const token = localStorage.getItem("token");
 
+  if (!token) {
+    showSuccsessMassege("Log in first", "danger");
+    return;
+  }
+
   if (body === "") {
-    alert("Write a comment first");
+    showSuccsessMassege("Write a Comment First", "danger");
     return;
   }
 
@@ -131,13 +136,32 @@ function addComment() {
       { headers: { authorization: `Bearer ${token}` } },
     )
     .then(() => {
-      getPost(); // reload post + comments
+      showSuccsessMassege("The Comment Was Successfully added", "success");
+      getPost(); // re-fetch and re-render, no page refresh
     })
     .catch((error) => {
-      alert(error.response?.data?.message || "Something went wrong");
+      console.log(error);
+      showSuccsessMassege(
+        error.response?.data?.message || "Something went wrong",
+        "danger",
+      );
     });
 }
 
 function goBack() {
   window.location = "index.html";
+}
+
+function showSuccsessMassege(message, type = "success") {
+  const alertPlaceholder = document.getElementById("succsessAlert");
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = `
+    <div class="alert alert-${type} alert-dismissible" role="alert">
+      <div>${message}</div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>`;
+  alertPlaceholder.append(wrapper);
+
+  // auto-remove after 3 seconds
+  setTimeout(() => wrapper.remove(), 3000);
 }
