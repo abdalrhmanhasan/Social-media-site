@@ -5,17 +5,18 @@ window.logout = logout;
 window.RegBtn = RegBtn;
 window.AddingBtn = AddingBtn;
 window.postClicked = postClicked;
+window.userClicked = userClicked;
+window.goToMyProfile = goToMyProfile;
 window.editBtn = editBtn;
 window.addingPost = addingPost;
-window.showSuccsessMassege = showSuccsessMassege;
 window.DeleteBtn = DeleteBtn;
 window.confirmDelete = confirmDelete;
-
-let deletingPostId = null;
+window.showSuccsessMassege = showSuccsessMassege;
 
 let curruntPage = 1;
 let lastPage;
-let editingPostId = null;
+let editingPostId = null; // null = create mode, number = edit mode
+let deletingPostId = null;
 const postsById = {};
 
 window.addEventListener("scroll", () => {
@@ -29,6 +30,7 @@ window.addEventListener("scroll", () => {
   }
 });
 
+// ---------- POSTS ----------
 if (document.getElementById("posts")) {
   getPosts();
 }
@@ -60,7 +62,7 @@ function getPosts(reload = true, page = 1) {
         const postTitle = pos.title != null ? pos.title : "";
 
         let tagsHtml = "";
-        for (let tag of pos.tags) {
+        for (let tag of pos.tags ?? []) {
           tagsHtml += `
           <button class="btn bg-secondary text-light rounded-pill mb-1 ms-2 px-3 py-1">
             ${tag.name}
@@ -70,7 +72,7 @@ function getPosts(reload = true, page = 1) {
         const editHtml =
           user != null && user.id === pos.author.id
             ? `<div class="btn btn-outline-danger mt-1 ms-2 edit-btn" onclick="DeleteBtn(${pos.id})">Delete</div>
-            <div class="btn btn-outline-secondary mt-1 edit-btn" onclick="editBtn(${pos.id})">Edit</div>`
+               <div class="btn btn-outline-secondary mt-1 edit-btn" onclick="editBtn(${pos.id})">Edit</div>`
             : "";
 
         document.getElementById("posts").innerHTML += `
@@ -80,7 +82,7 @@ function getPosts(reload = true, page = 1) {
               src="/Assetes/Profile/profile.png"
               class="pofile-pics border border-2 rounded-circle"
             />
-            <b class="ms-2">${pos.author.username}</b>
+            <b class="ms-2 user-link" onclick="userClicked(${pos.author.id})">${pos.author.username}</b>
             ${editHtml}
           </div>
           <div class="card-body" onclick="postClicked(${pos.id})">
@@ -105,6 +107,7 @@ function getPosts(reload = true, page = 1) {
     });
 }
 
+// ---------- LOG IN ----------
 function logInBtn() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("pass").value;
@@ -148,24 +151,25 @@ function setupUI() {
   const RegisterBtn = document.getElementById("Register-btn");
   const logoutDiv = document.getElementById("logOutDiv");
   const addpostBtn = document.getElementById("addingPost");
+  const profileLink = document.getElementById("profileLink");
 
   if (token == null) {
+    // logged out
     loginBtn.style.display = "";
     RegisterBtn.style.display = "";
     logoutDiv.classList.add("d-none");
-    if (addpostBtn != null) {
-      addpostBtn.style.display = "none";
-    }
+    if (addpostBtn != null) addpostBtn.style.display = "none";
+    if (profileLink) profileLink.href = "profile.html";
   } else {
+    // logged in
     loginBtn.style.display = "none";
     RegisterBtn.style.display = "none";
     logoutDiv.classList.remove("d-none");
-    if (addpostBtn != null) {
-      addpostBtn.style.display = "";
-    }
+    if (addpostBtn != null) addpostBtn.style.display = "";
 
     const user = JSON.parse(localStorage.getItem("user"));
     document.getElementById("profileUserName").innerHTML = user.username;
+    if (profileLink) profileLink.href = `profile.html?id=${user.id}`;
   }
 }
 
@@ -178,6 +182,7 @@ function logout() {
 }
 setupUI();
 
+// ---------- REGISTER ----------
 function RegBtn() {
   const name = document.getElementById("reg-name").value;
   const username = document.getElementById("reg-username").value;
@@ -202,21 +207,18 @@ function RegBtn() {
     });
 }
 
+// ---------- CREATE / UPDATE POST ----------
 function AddingBtn() {
   const title = document.getElementById("addingTitle").value;
   const body = document.getElementById("addingBody").value;
   const image = document.getElementById("addingImage").files[0];
   const token = localStorage.getItem("token");
-  const headers = {
-    authorization: `Bearer ${token}`,
-  };
+  const headers = { authorization: `Bearer ${token}` };
 
   let formData = new FormData();
   formData.append("body", body);
   formData.append("title", title);
-  if (image) {
-    formData.append("image", image);
-  }
+  if (image) formData.append("image", image);
 
   let url = `${baseUrl}/posts`;
   let successMsg = "New Post Was Created";
@@ -255,10 +257,9 @@ function editBtn(postId) {
   document.getElementById("addingBody").value = post.body;
   document.getElementById("addingImage").value = "";
 
-  const modal = bootstrap.Modal.getOrCreateInstance(
+  bootstrap.Modal.getOrCreateInstance(
     document.getElementById("addingModal"),
-  );
-  modal.show();
+  ).show();
 }
 
 function addingPost() {
@@ -271,17 +272,12 @@ function addingPost() {
   document.getElementById("addingImage").value = "";
 }
 
-function postClicked(postId) {
-  window.location = `postDetail.html?postId=${postId}`;
-}
-
+// ---------- DELETE POST ----------
 function DeleteBtn(postId) {
   deletingPostId = postId;
-
-  const modal = bootstrap.Modal.getOrCreateInstance(
+  bootstrap.Modal.getOrCreateInstance(
     document.getElementById("deleteModal"),
-  );
-  modal.show();
+  ).show();
 }
 
 function confirmDelete() {
@@ -292,18 +288,31 @@ function confirmDelete() {
       headers: { authorization: `Bearer ${token}` },
     })
     .then(() => {
-      const modal = bootstrap.Modal.getInstance(
-        document.getElementById("deleteModal"),
-      );
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
       showSuccsessMassege("Post Was Deleted", "success");
 
       deletingPostId = null;
       curruntPage = 1;
-      getPosts(); // refresh the feed, no page reload
+      if (document.getElementById("posts")) getPosts();
     })
     .catch((error) => {
       const msg = error.response?.data?.message || "Something went wrong";
       showSuccsessMassege(msg, "danger");
     });
+}
+
+// ---------- NAVIGATION ----------
+function postClicked(postId) {
+  window.location = `postDetail.html?postId=${postId}`;
+}
+
+function userClicked(userId) {
+  window.location = `profile.html?id=${userId}`;
+}
+
+function goToMyProfile() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    window.location = `profile.html?id=${user.id}`;
+  }
 }

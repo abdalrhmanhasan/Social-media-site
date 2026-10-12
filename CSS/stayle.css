@@ -71,3 +71,10 @@ h6 {
 .merg-left{
   margin-left: 150px !important;
 }
+
+.user-link {
+  cursor: pointer;
+}
+.user-link:hover {
+  text-decoration: underline;
+}

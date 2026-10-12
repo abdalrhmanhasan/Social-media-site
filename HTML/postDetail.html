@@ -10,28 +10,18 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/CSS/stayle.css" />
+    <link rel="icon" href="data:," />
     <title>Comment Page</title>
   </head>
 
   <body>
     <!-- LOG IN MODAL -->
-    <div
-      class="modal fade"
-      id="loginModal"
-      tabindex="-1"
-      aria-labelledby="loginModalTitle"
-      aria-hidden="true"
-    >
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalTitle" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="loginModalTitle">Log in</h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form>
@@ -46,86 +36,55 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button type="button" class="btn btn-primary" onclick="logInBtn()">
-              Log in
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="logInBtn()">Log in</button>
           </div>
         </div>
       </div>
     </div>
     <!-- //LOG IN MODAL// -->
-    <!-- Succsess Module -->
-    <div id="succsessAlert" class="success-massege"></div>
-    <!-- //Succsess Module// -->
 
-    <!--REG MODAL -->
-    <div
-      class="modal fade"
-      id="RegModal"
-      tabindex="-1"
-      aria-labelledby="loginModalTitle"
-      aria-hidden="true"
-    >
+    <!-- SUCCESS ALERTS -->
+    <div id="succsessAlert" class="success-massege"></div>
+
+    <!-- REGISTER MODAL -->
+    <div class="modal fade" id="RegModal" tabindex="-1" aria-labelledby="regModalTitle" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="loginModalTitle">
-              Register a New User
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <h1 class="modal-title fs-5" id="regModalTitle">Register a New User</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form>
               <div class="mb-3">
-                <label for="username" class="col-form-label">Name:</label>
+                <label for="reg-name" class="col-form-label">Name:</label>
                 <input type="text" class="form-control" id="reg-name" />
               </div>
               <div class="mb-3">
-                <label for="username" class="col-form-label">UserName:</label>
+                <label for="reg-username" class="col-form-label">UserName:</label>
                 <input type="text" class="form-control" id="reg-username" />
               </div>
               <div class="mb-3">
-                <label for="pass" class="col-form-label">Password:</label>
+                <label for="reg-pass" class="col-form-label">Password:</label>
                 <input type="password" class="form-control" id="reg-pass" />
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button type="button" class="btn btn-primary" onclick="RegBtn()">
-              Register
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="RegBtn()">Register</button>
           </div>
         </div>
       </div>
     </div>
-    <!--//REG MODAL -->
+    <!-- //REGISTER MODAL// -->
 
     <div class="container shadow rounded p-0">
       <!-- NAV BAR -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <span class="navbar-brand fw-bold" id="homePage" onclick="goBack()"
-            >SocialWeb</span
-          >
+          <span class="navbar-brand fw-bold user-link" onclick="goBack()">SocialWeb</span>
           <button
             class="navbar-toggler"
             type="button"
@@ -140,52 +99,31 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link" href="index.html">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Profile</a>
+                <a class="nav-link" id="profileLink" href="profile.html">Profile</a>
               </li>
             </ul>
-            <!-- FOR NON-LOGED IN USER -->
+
+            <!-- LOGGED OUT -->
             <div class="d-flex w-100 justify-content-end p-2">
-              <button
-                id="login-btn"
-                type="button"
-                class="btn btn-outline-success"
-                data-bs-toggle="modal"
-                data-bs-target="#loginModal"
-              >
+              <button id="login-btn" type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#loginModal">
                 Log in
               </button>
-              <button
-                id="Register-btn"
-                type="button"
-                class="btn btn-outline-secondary ms-3"
-                data-bs-toggle="modal"
-                data-bs-target="#RegModal"
-              >
+              <button id="Register-btn" type="button" class="btn btn-outline-secondary ms-3" data-bs-toggle="modal" data-bs-target="#RegModal">
                 Register
               </button>
             </div>
-            <!-- //FOR NON-LOGED IN USER -->
-            <div class="d-flex bg" id="logOutDiv">
-              <!-- FOR LOGED IN USER -->
 
-              <img
-                class="rounded-circle pofile-pics"
-                src="/Assetes/Profile/profile.png"
-              />
-              <p class="mt-2 mx-2" id="profileUserName"></p>
-              <button
-                id="logedOut"
-                type="button"
-                class="btn btn-outline-danger"
-                onclick="logout()"
-              >
+            <!-- LOGGED IN -->
+            <div class="d-flex bg" id="logOutDiv">
+              <img class="rounded-circle pofile-pics" src="/Assetes/Profile/profile.png" />
+              <p class="mt-2 mx-2 user-link" id="profileUserName" onclick="goToMyProfile()"></p>
+              <button id="logedOut" type="button" class="btn btn-outline-danger" onclick="logout()">
                 Logout
               </button>
             </div>
-            <!-- //FOR LOGED IN USER -->
           </div>
         </div>
       </nav>
@@ -201,18 +139,14 @@
       <div id="post">
         <h1>Loading...</h1>
       </div>
-      <!-- //CONTENT// -->
 
-      <!-- Comments (filled by JS) -->
+      <!-- Comments + add-comment box (both filled by JS) -->
       <div class="p-3 comments" id="comments"></div>
-
-      <!-- ADD COMMENT (always the last thing) -->
-      <div id="add-comment-div"></div>
     </div>
+    <!-- //CONTENT// -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/node_modules/axios/dist/axios.js"></script>
-
     <script type="module" src="/JS/script.js"></script>
     <script type="module" src="/JS/post.js"></script>
   </body>
